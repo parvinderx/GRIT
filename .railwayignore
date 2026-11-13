@@ -1,0 +1,7 @@
+node_modules
+.next
+Docs
+.claude
+*.log
+.env*
+!.env.example
