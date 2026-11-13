@@ -20,17 +20,19 @@ const demoPasscode = (process.env.DEMO_PASSCODE ?? "").trim();
 export const env = {
   databaseUrl: process.env.DATABASE_URL ?? "",
   appTz: process.env.APP_TZ ?? "Asia/Kolkata",
-  /** Clock, stories and job tick. On in development, off in production unless explicitly enabled. */
-  devTools: (process.env.DEV_TOOLS_ENABLED ?? (isProd ? "false" : "true")) === "true",
   /**
-   * Demo passcode for the persona switcher. In production it is the only way to sign in
-   * (there is no SSO yet) and /start prints it openly: it marks the deploy as a demo,
-   * it is not access control.
+   * Clock, stories and job tick. This app is a feature demo, so they are on everywhere
+   * (including the deploy) unless DEV_TOOLS_ENABLED=false.
+   */
+  devTools: (process.env.DEV_TOOLS_ENABLED ?? "true") === "true",
+  /**
+   * Optional demo passcode for the persona switcher. Unset = no passcode (the default:
+   * the deploy is a demo, there is no login). If set, /start prints it openly.
    */
   demoPasscode,
-  /** Persona switching: always in development; in production only when a demo passcode is set. */
-  personaSwitch: !isProd || demoPasscode.length > 0,
-  /** Passcode must accompany a persona switch (production with a passcode). */
+  /** Persona switching is always on: it is the only way in (there is no SSO). */
+  personaSwitch: true,
+  /** Passcode must accompany a persona switch (production with a passcode set). */
   passcodeRequired: isProd && demoPasscode.length > 0,
   /** Bearer secret for the job tick and integration endpoints. */
   cronSecret: (process.env.CRON_SECRET ?? "").trim(),
