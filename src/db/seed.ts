@@ -44,7 +44,8 @@ async function wipe() {
 
 async function main() {
   // `--if-empty` (production start): seed a fresh database once, never wipe real data.
-  if (process.argv.includes("--if-empty")) {
+  // FORCE_RESEED=true overrides it for one deploy to reset the demo data; remove it right after.
+  if (process.argv.includes("--if-empty") && process.env.FORCE_RESEED !== "true") {
     const [{ n }] = await sql<{ n: number }[]>`SELECT count(*)::int n FROM users`;
     if (n > 0) {
       console.log(`· seed skipped: database already has ${n} users`);
