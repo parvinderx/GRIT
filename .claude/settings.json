@@ -1,0 +1,6 @@
+{
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true,
+    "bencium-controlled-ux-designer@bencium-marketplace": true
+  }
+}

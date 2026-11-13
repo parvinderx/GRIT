@@ -1,26 +1,370 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@custom-variant dark (&:is(.dark *));
+
+/*
+  GRIT "Boarding Pass" design system.
+  Calm Paper + Ink everywhere; Saffron = the student's ONE next step; Go = live/join;
+  Cobalt = progress/links/staff actions; Review = integrity; Alert = STAFF-ONLY red.
+  Red never appears on a student's result.
+*/
+/* Student + interviewer palette. NOT inline: utilities resolve through var(--color-*),
+   so the .student scope below can swap in the dark GRIT portal values. */
+@theme {
+  --color-sheet: #fcfcfa;
+  --color-rule: #dce3ee;
+  --color-rule-soft: #eef2f7;
+  --color-graphite: #1d2129;
+  --color-pencil: #5b6472;
+  /* GRIT brand: purple carries links, info and progress; yellow is the one next action. */
+  --color-ballpoint: #6a3fa3;
+  --color-ballpoint-soft: #f1ebfa;
+  --color-highlight: #f6dc2f;
+  --color-highlight-ink: #151515;
+  /* Brand purple for filled buttons and bands (white text on it passes AA). */
+  --color-grit-purple: #7c3aed;
+  /* Brand surfaces: cream cards, ink outlines with a hard drop shadow. */
+  --color-cream: #fffdf3;
+  --color-ink-line: #151515;
+  --color-mint: #16805a;
+  --color-mint-soft: #e5f4ed;
+  --color-amberline: #96600f;
+  --color-amberline-soft: #fbf1df;
+  /* Earned badges and the podium. Gold ink passes 4.5:1 on sheet; the rims are decorative. */
+  --color-gold: #c9971c;
+  --color-gold-soft: #fbf3dc;
+  --color-gold-ink: #7a5a06;
+  --color-silver: #9aa3b2;
+  --color-bronze: #b0703d;
+  /* Third track hue (AI Models); AI Product = ballpoint (purple), AI Systems = mint. */
+  --color-violet: #2b5bd0;
+  --color-violet-soft: #e8eefc;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-space-grotesk);
+  --font-mono: var(--font-jetbrains);
+
+  /* brand color scale — generates bg, text and border utilities */
+  --color-ink: #0e1b2c;
+  --color-ink-2: #44506a;
+  --color-ink-soft: #16233a;
+  --color-paper: #f6f4ef;
+  --color-paper-2: #ece9e1;
+  --color-amber: #b4791f;
+  --color-cobalt: #2b4acb;
+  --color-saffron: #f5b82e;
+  --color-saffron-ink: #5a3d00;
+  --color-go: #11744a;
+  --color-review: #4b3f8c;
+  --color-alert: #8a1c12;
+
+  /* ── Student view: "notebook & highlighter" ────────────────────────────────
+     Highlight marks the student's ONE next action and nothing else.
+     Ballpoint = info/links/progress. Mint = live/cleared. Amberline = waiting.
+     No red anywhere on student screens. */
+  --font-display: var(--font-schibsted);
+  --font-read: var(--font-atkinson);
+
+  /* shadcn semantic tokens mapped to the palette */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --radius: 0.75rem;
+
+  --background: #f6f4ef; /* Paper */
+  --foreground: #0e1b2c; /* Ink */
+  --card: #ffffff;
+  --card-foreground: #0e1b2c;
+  --popover: #ffffff;
+  --popover-foreground: #0e1b2c;
+
+  --primary: #2b4acb; /* Cobalt — neutral/staff default */
+  --primary-foreground: #ffffff;
+  --secondary: #ece9e1; /* Paper-2 */
+  --secondary-foreground: #0e1b2c;
+  --muted: #ece9e1;
+  --muted-foreground: #44506a; /* Ink-2 */
+  --accent: #eef1fc; /* faint cobalt wash */
+  --accent-foreground: #2b4acb;
+  --destructive: #8a1c12; /* Alert — staff only */
+  --border: #e2ded4;
+  --input: #e2ded4;
+  --ring: #2b4acb;
+
+  --chart-1: #2b4acb;
+  --chart-2: #f5b82e;
+  --chart-3: #11744a;
+  --chart-4: #4b3f8c;
+  --chart-5: #44506a;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0e1b2c;
+  --sidebar-primary: #2b4acb;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef1fc;
+  --sidebar-accent-foreground: #2b4acb;
+  --sidebar-border: #e2ded4;
+  --sidebar-ring: #2b4acb;
+}
+
+.dark {
+  --background: #0b1420;
+  --foreground: #f6f4ef;
+  --card: #0e1b2c;
+  --card-foreground: #f6f4ef;
+  --popover: #0e1b2c;
+  --popover-foreground: #f6f4ef;
+  --primary: #5f78e6;
+  --primary-foreground: #0b1420;
+  --secondary: #1a2638;
+  --secondary-foreground: #f6f4ef;
+  --muted: #1a2638;
+  --muted-foreground: #a7b0c2;
+  --accent: #16233a;
+  --accent-foreground: #cdd7f5;
+  --destructive: #d4756b;
+  --border: #ffffff1a;
+  --input: #ffffff26;
+  --ring: #5f78e6;
+  --sidebar: #0e1b2c;
+  --sidebar-foreground: #f6f4ef;
+  --sidebar-primary: #5f78e6;
+  --sidebar-primary-foreground: #0b1420;
+  --sidebar-accent: #16233a;
+  --sidebar-accent-foreground: #cdd7f5;
+  --sidebar-border: #ffffff1a;
+  --sidebar-ring: #5f78e6;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "cv11", "ss01";
+  }
+  html {
+    @apply font-sans antialiased;
+  }
+  h1, h2, h3, .font-heading {
+    font-family: var(--font-heading), var(--font-sans), system-ui, sans-serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Notebook scope: student (.student) and interviewer (.notebook) screens ── */
+:is(.student, .notebook) {
+  background: var(--color-sheet);
+  color: var(--color-graphite);
+  font-family: var(--font-jakarta), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.55;
+  font-feature-settings: normal;
+}
+:is(.student, .notebook) h1,
+:is(.student, .notebook) h2,
+:is(.student, .notebook) h3,
+:is(.student, .notebook) .font-display {
+  font-family: var(--font-jakarta), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+/* GRIT card: cream, ink outline, hard drop shadow (brand). */
+:is(.student, .notebook) .grit-card {
+  background: var(--color-cream);
+  border: 2px solid var(--color-ink-line);
+  border-radius: 18px;
+  box-shadow: 0 5px 0 var(--color-ink-line);
+}
+/* A card's header band (purple or yellow), flush with the card's top corners. */
+:is(.student, .notebook) .grit-band {
+  border-bottom: 2px solid var(--color-ink-line);
+  border-radius: 16px 16px 0 0;
+}
+:is(.student, .notebook) :focus-visible {
+  outline: 3px solid var(--color-ballpoint);
+  outline-offset: 2px;
+}
+/* Faint graph paper behind the hero only. */
+:is(.student, .notebook) .graph-paper {
+  background-image:
+    linear-gradient(var(--color-rule-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-rule-soft) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+}
+/* The highlighter stroke under a hero headline: drawn once, on load. */
+:is(.student, .notebook) .highlight-stroke {
+  background-image: linear-gradient(var(--color-highlight), var(--color-highlight));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 100% 0.32em;
+  animation: highlight-draw 700ms cubic-bezier(0.3, 0.7, 0.2, 1) 150ms both;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+/* A badge earned in the last few days: the medal settles in once with a sweep of light. */
+:is(.student, .notebook) .medal-new {
+  animation: medal-in 600ms cubic-bezier(0.2, 0.8, 0.2, 1.2) 200ms both;
+}
+:is(.student, .notebook) .medal-new .medal-shine {
+  animation: medal-shine 1100ms ease-out 700ms both;
+}
+@keyframes medal-in {
+  from {
+    transform: scale(0.82);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes medal-shine {
+  from {
+    transform: translateX(-120%) rotate(20deg);
+    opacity: 0.9;
+  }
+  to {
+    transform: translateX(160%) rotate(20deg);
+    opacity: 0;
+  }
+}
+/* ── Student screens: the GRIT student portal look (dark) ─────────────────────
+   Same token names, dark values, so every student component follows. Contrast on
+   --color-sheet: graphite 17:1, pencil 7.6:1, ballpoint 6.6:1, mint 9:1,
+   amberline 10:1, gold-ink 10:1 (WCAG AA for text). */
+.student {
+  color-scheme: dark;
+  --color-sheet: #0e0e10;
+  --color-cream: #18181b;
+  --color-rule: #2e2e34;
+  --color-rule-soft: #1d1d21;
+  --color-graphite: #f4f4f5;
+  --color-pencil: #a1a1aa;
+  --color-ballpoint: #a78bfa;
+  --color-ballpoint-soft: #251a40;
+  --color-highlight: #f5d90a;
+  --color-highlight-ink: #141414;
+  --color-mint: #34d399;
+  --color-mint-soft: #0f2a22;
+  --color-amberline: #fbbf24;
+  --color-amberline-soft: #2c230c;
+  --color-gold: #e3b341;
+  --color-gold-soft: #2e2512;
+  --color-gold-ink: #f3cf5a;
+  --color-silver: #b8bfcc;
+  --color-bronze: #c98a55;
+  --color-violet: #60a5fa;
+  --color-violet-soft: #14253d;
+  --color-ink-line: #2e2e34;
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+}
+.student h1,
+.student h2,
+.student h3,
+.student .font-display {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+/* Portal cards: dark surface, hairline border, purple top edge, no hard shadow. */
+.student .grit-card {
+  background: var(--color-cream);
+  border: 1px solid var(--color-rule);
+  border-top: 4px solid var(--color-grit-purple);
+  box-shadow: none;
+}
+.student .grit-band {
+  border-bottom: 1px solid var(--color-rule);
+  border-radius: 14px 14px 0 0;
+}
+/* Light surfaces written for the paper theme become dark surfaces here. */
+.student .bg-white {
+  background-color: var(--color-cream);
+}
+.student .bg-graphite,
+.student .bg-ballpoint {
+  background-color: var(--color-grit-purple);
+}
+.student .bg-ink-line {
+  background-color: var(--color-grit-purple);
+}
+/* On dark, the headline mark is a yellow underline bar, not a fill behind the text. */
+.student .highlight-stroke {
+  background-position: 0 100%;
+  background-size: 100% 0.12em;
+}
+
+/* Sparkles around a large earned medal: a slow twinkle. */
+:is(.student, .notebook) .medal-sparkle {
+  animation: medal-twinkle 2.8s ease-in-out infinite;
+}
+@keyframes medal-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.6);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+/* Interviewer screens are denser: a working schedule, not a reading page. */
+.notebook {
+  font-size: 15px;
+}
+@keyframes highlight-draw {
+  from {
+    background-size: 0% 0.32em;
+  }
+  to {
+    background-size: 100% 0.32em;
+  }
+}
+
+/* respect reduced motion globally for our custom animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

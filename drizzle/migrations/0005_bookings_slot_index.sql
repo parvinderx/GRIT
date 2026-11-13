@@ -1,0 +1,12 @@
+-- ---------------------------------------------------------------------------
+-- Saving availability now deletes only future OPEN slots that no booking points
+-- at (NOT EXISTS bookings.slot_id = slot) and retires the rest as CANCELLED; a
+-- plain DELETE of a referenced slot failed the bookings.slot_id foreign key (23503).
+-- Both that check and the FK check Postgres runs on every slot DELETE look up
+-- bookings by slot_id. The only existing index on it (uq_bookings_slot_live) is
+-- partial, so it can't serve them; add a full one.
+--
+-- No constraint change is needed: no_interviewer_overlap (0001) already ignores
+-- CANCELLED slots, so a retired slot's time can be generated again.
+-- ---------------------------------------------------------------------------
+CREATE INDEX IF NOT EXISTS idx_bookings_slot ON bookings (slot_id);
