@@ -16,7 +16,7 @@
     "test:availability": "node --import ./scripts/register.mjs --env-file=.env.local src/test/availability/run.ts",
     "migrate:prod": "node --import ./scripts/register.mjs src/db/migrate.ts",
     "seed:prod": "node --import ./scripts/register.mjs src/db/seed.ts",
-    "start:prod": "npm run migrate:prod && next start -p ${PORT:-3000}"
+    "start:prod": "npm run migrate:prod && node --import ./scripts/register.mjs src/db/seed.ts --if-empty && next start -p ${PORT:-3000}"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

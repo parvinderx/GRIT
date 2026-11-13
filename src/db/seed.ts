@@ -43,6 +43,15 @@ async function wipe() {
 }
 
 async function main() {
+  // `--if-empty` (production start): seed a fresh database once, never wipe real data.
+  if (process.argv.includes("--if-empty")) {
+    const [{ n }] = await sql<{ n: number }[]>`SELECT count(*)::int n FROM users`;
+    if (n > 0) {
+      console.log(`· seed skipped: database already has ${n} users`);
+      await sql.end();
+      process.exit(0);
+    }
+  }
   await wipe();
 
   // ── season + rules ────────────────────────────────────────────────────────
