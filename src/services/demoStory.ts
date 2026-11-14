@@ -11,7 +11,7 @@
 import { randomUUID } from "crypto";
 import { sql } from "@/db";
 import { ApiError } from "@/lib/errors";
-import { serverNow, setClockAbsolute } from "@/lib/clock";
+import { serverNow, setClockAbsolute, setClockReal } from "@/lib/clock";
 import { toIST } from "@/lib/time";
 import { bookInterview, cancelBooking, rescheduleBooking } from "./booking";
 import { studentJoin } from "./join";
@@ -206,10 +206,8 @@ async function reset(c: Cast) {
     await tx`ALTER TABLE journey_events ENABLE TRIGGER trg_journey_events_append_only`;
     await tx`ALTER TABLE interview_journeys ENABLE TRIGGER trg_enforce_journey_transition`;
   });
-  // Stories start from the real present, then run on simulated time.
-  const real = new Date();
-  real.setSeconds(0, 0);
-  await setClockAbsolute(real.toISOString());
+  // Stories start from the real present; later steps jump forward and the clock keeps running.
+  await setClockReal();
   await materializeSlots();
 }
 

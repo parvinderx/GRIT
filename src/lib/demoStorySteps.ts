@@ -54,7 +54,7 @@ export interface Scenario {
   steps: StoryStep[];
 }
 
-const START: StoryStep = { action: "reset", title: "Ravi is ready to book", body: "All skills cleared for AI Product Mastery Novice. The clock goes back to Mon 23 Nov, noon.", as: "student" };
+const START: StoryStep = { action: "reset", title: "Ravi is ready to book", body: "All skills cleared for AI Product Mastery Novice. The clock goes back to real time (today).", as: "student" };
 const BOOK: StoryStep = { action: "book", title: "Ravi books an interview", body: "He picks the first open time a day or more away. The system assigns an interviewer.", as: "student" };
 const WAIT: StoryStep = { action: "wait", title: "The day arrives", body: "Two hours before. Ravi's home page counts down live.", as: "student" };
 const JOIN: StoryStep = { action: "joinRight", title: "Ravi joins", body: "Join opens 10 minutes before. He ticks the readiness checks and joins; his booking code is shown so he can read it out.", as: "student" };
